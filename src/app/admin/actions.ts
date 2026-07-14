@@ -16,6 +16,8 @@ export async function loginAdmin(
 ): Promise<LoginState> {
   const password = String(formData.get("password") ?? "");
   if (!checkPassword(password)) {
+    // Atraso anti-força-bruta (defesa em profundidade; a password deve na mesma ser forte).
+    await new Promise((r) => setTimeout(r, 700));
     return { error: "Palavra-passe incorreta." };
   }
   await setAdminCookie();
