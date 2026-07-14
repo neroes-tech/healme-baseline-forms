@@ -6,6 +6,12 @@ import { NextResponse, type NextRequest } from "next/server";
 type CookieToSet = { name: string; value: string; options: CookieOptions };
 
 export async function updateSession(request: NextRequest) {
+  // A área /admin tem o seu próprio gate (password), não usa a sessão de participante.
+  // Deixa passar sem refrescar sessão nem redirecionar para /login.
+  if (request.nextUrl.pathname.startsWith("/admin")) {
+    return NextResponse.next({ request });
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
