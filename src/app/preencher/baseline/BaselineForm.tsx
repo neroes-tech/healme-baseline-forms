@@ -48,7 +48,6 @@ type DraftShape = {
   scales: ScaleValues;
   notes: NoteValues;
   sono: SonoState;
-  confirmacaoIniciais: string;
 };
 
 type Props = {
@@ -118,7 +117,6 @@ export default function BaselineForm({
         sintomas: "",
         sintomasDesc: "",
       },
-      confirmacaoIniciais: "",
     }),
     [polarId, studyGroup, defaultDate, defaultStartTime],
   );
@@ -213,8 +211,8 @@ export default function BaselineForm({
       enr_voltar_calma: s.enr_voltar_calma ?? null,
       enr_voltar_calma_notas: toTextOrNull(n.enr_voltar_calma_notas ?? ""),
 
-      // Confirmação final
-      confirmacao_iniciais: toTextOrNull(data.confirmacaoIniciais),
+      // Confirmação final (campo de assinatura/iniciais removido por decisão da equipa)
+      confirmacao_iniciais: null,
       concluido_em: new Date().toISOString(),
     };
 
@@ -316,7 +314,6 @@ export default function BaselineForm({
           <IdentificationBlock
             values={data.ident}
             onChange={setIdent}
-            showGroup
             showFormVersion
             timepointLabel="Baseline T-14 a T-7"
           />
@@ -523,27 +520,10 @@ export default function BaselineForm({
             <p className="mt-2 rounded-lg bg-surface-alt p-4 text-[1.0625rem] leading-relaxed text-ink">
               {HEALME_CONFIRMACAO.texto}
             </p>
-            <div className={`mt-4 ${cardClass}`}>
-              <label
-                htmlFor="iniciais"
-                className="mb-1.5 block text-[1.0625rem] font-medium text-ink"
-              >
-                {HEALME_CONFIRMACAO.labelIniciais}
-              </label>
-              <input
-                id="iniciais"
-                type="text"
-                value={data.confirmacaoIniciais}
-                onChange={(e) =>
-                  setData((d) => ({ ...d, confirmacaoIniciais: e.target.value }))
-                }
-                className={inputClass}
-              />
-              <p className="mt-3 text-[0.9375rem] text-muted">
-                {HEALME_CONFIRMACAO.labelDataHora}: preenchido automaticamente na
-                submissão.
-              </p>
-            </div>
+            <p className="mt-3 text-[0.9375rem] text-muted">
+              {HEALME_CONFIRMACAO.labelDataHora}: preenchido automaticamente na
+              submissão.
+            </p>
           </section>
 
           {error && (

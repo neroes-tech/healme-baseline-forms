@@ -175,7 +175,6 @@ export default function Pss10Form({
           <IdentificationBlock
             values={data.ident}
             onChange={setIdent}
-            showGroup={false}
             showFormVersion={false}
             timepointLabel="Baseline"
           />

@@ -5,29 +5,17 @@
 // SEM CAMPO DE NOME. Em lado nenhum. Nunca.
 // Campos read-only (ID/Língua/Timepoint/Versão) são apresentados como <dl> — saem da
 // ordem de tabulação e deixam de parecer editáveis. Data/Hora ficam inputs editáveis.
-// "Grupo" e "Preenchido por" são radiogroups acessíveis (fieldset/legend).
+// Por decisão da equipa, os seletores "Grupo" e "Preenchido por" foram removidos:
+// o valor de filled_by é sempre "participante"; study_group vem do perfil (ou fica null).
 
-import type { FilledBy, IdentificationValues, StudyGroup } from "@/lib/types";
+import type { IdentificationValues } from "@/lib/types";
 
 type Props = {
   values: IdentificationValues;
   onChange: (patch: Partial<IdentificationValues>) => void;
-  showGroup?: boolean;
   showFormVersion?: boolean;
   timepointLabel?: string;
 };
-
-const GROUPS: { value: StudyGroup; label: string }[] = [
-  { value: "active", label: "Active" },
-  { value: "vacation", label: "Vacation" },
-  { value: "waitlist", label: "Waitlist" },
-];
-
-const chipBase =
-  "flex min-h-13 cursor-pointer select-none items-center gap-2 rounded-md border-2 px-5 py-3 text-[1.0625rem] font-medium transition";
-const chipOn = "border-brand-hover bg-selected text-brand-contrast shadow-sm";
-const chipOff =
-  "border-control bg-surface text-ink hover:border-brand hover:bg-brand-tint";
 
 function ReadOnlyField({ label, value }: { label: string; value: string }) {
   return (
@@ -45,7 +33,6 @@ function ReadOnlyField({ label, value }: { label: string; value: string }) {
 export default function IdentificationBlock({
   values,
   onChange,
-  showGroup = false,
   showFormVersion = false,
   timepointLabel = "Baseline",
 }: Props) {
@@ -101,77 +88,6 @@ export default function IdentificationBlock({
           />
         </div>
       </div>
-
-      {/* Grupo — só HEAL-ME */}
-      {showGroup && (
-        <fieldset className="mt-4">
-          <legend className="mb-2 block text-[0.8125rem] font-semibold text-muted">
-            Grupo
-          </legend>
-          <div role="radiogroup" aria-label="Grupo" className="flex flex-wrap gap-2">
-            {GROUPS.map((g) => {
-              const selected = values.studyGroup === g.value;
-              return (
-                <label
-                  key={g.value}
-                  className={`${chipBase} ${selected ? chipOn : chipOff}`}
-                >
-                  <input
-                    type="radio"
-                    name="study-group"
-                    value={g.value}
-                    checked={selected}
-                    onChange={() => onChange({ studyGroup: g.value })}
-                    className="sr-only"
-                  />
-                  {g.label}
-                </label>
-              );
-            })}
-          </div>
-        </fieldset>
-      )}
-
-      {/* Preenchido por — obrigatório */}
-      <fieldset className="mt-4">
-        <legend className="mb-2 block text-[0.8125rem] font-semibold text-muted">
-          Preenchido por{" "}
-          <span className="text-error" aria-hidden="true">
-            *
-          </span>
-        </legend>
-        <div
-          role="radiogroup"
-          aria-label="Preenchido por"
-          aria-required="true"
-          className="flex flex-wrap gap-2"
-        >
-          {(
-            [
-              { value: "participante", label: "Participante" },
-              { value: "operador", label: "Operador" },
-            ] as { value: FilledBy; label: string }[]
-          ).map((f) => {
-            const selected = values.filledBy === f.value;
-            return (
-              <label
-                key={f.value}
-                className={`${chipBase} ${selected ? chipOn : chipOff}`}
-              >
-                <input
-                  type="radio"
-                  name="filled-by"
-                  value={f.value}
-                  checked={selected}
-                  onChange={() => onChange({ filledBy: f.value })}
-                  className="sr-only"
-                />
-                {f.label}
-              </label>
-            );
-          })}
-        </div>
-      </fieldset>
     </section>
   );
 }
