@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { formatTimestamp } from "@/lib/datetime";
+import Footer from "@/components/Footer";
 import SignOutButton from "@/components/SignOutButton";
 import { startSession } from "./actions";
 
@@ -25,7 +26,6 @@ export default async function DashboardPage() {
     .select("id, timepoint, started_at, completed_at, status")
     .order("started_at", { ascending: false });
 
-  // Que sessões já têm PSS-10 submetido (para saber onde retomar).
   const { data: pssRows } = await supabase
     .from("pss10_responses")
     .select("session_id");
@@ -40,91 +40,99 @@ export default async function DashboardPage() {
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8">
-      <header className="mb-8 flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">
-            Olá, {profile?.display_name || "participante"}
-          </h1>
-          <p className="mt-1 text-sm text-slate-600">
-            ID do participante: {profile?.polar_id}
-          </p>
-        </div>
-        <SignOutButton />
-      </header>
+    <div className="flex min-h-dvh flex-col">
+      <main className="mx-auto w-full max-w-content flex-1 px-4 py-8 sm:px-6">
+        <header className="mb-8 flex items-start justify-between gap-4">
+          <div>
+            <p className="text-[0.8125rem] font-semibold uppercase tracking-wide text-brand">
+              HE26
+            </p>
+            <h1 className="mt-1 text-[1.75rem] font-bold text-ink sm:text-[2rem]">
+              Olá, {profile?.display_name || "participante"}
+            </h1>
+            <p className="mt-1 text-[0.9375rem] text-muted">
+              ID do participante: {profile?.polar_id}
+            </p>
+          </div>
+          <SignOutButton />
+        </header>
 
-      {/* Sessão em curso — retomar */}
-      {inProgress ? (
-        <section className="mb-6 rounded-xl border-2 border-amber-300 bg-amber-50 p-5">
-          <h2 className="text-lg font-semibold text-slate-900">
-            Tem um preenchimento por concluir
-          </h2>
-          <p className="mt-1 text-sm text-slate-600">
-            Iniciado em {formatTimestamp(inProgress.started_at)}.
-          </p>
-          <Link
-            href={resumeHref(inProgress.id)}
-            className="mt-4 inline-block rounded-lg bg-slate-900 px-5 py-3 text-base font-semibold text-white transition hover:bg-slate-800"
-          >
-            Retomar preenchimento
-          </Link>
-        </section>
-      ) : (
-        <section className="mb-6 rounded-xl border border-slate-200 bg-white p-5">
-          <h2 className="text-lg font-semibold text-slate-900">
-            Novo preenchimento
-          </h2>
-          <p className="mt-1 text-sm text-slate-600">
-            Vai preencher dois formulários em sequência.
-          </p>
-          <form action={startSession} className="mt-4">
-            <button
-              type="submit"
-              className="rounded-lg bg-slate-900 px-5 py-3 text-base font-semibold text-white transition hover:bg-slate-800"
+        {/* Sessão em curso — retomar */}
+        {inProgress ? (
+          <section className="mb-6 rounded-lg border-l-4 border-[#B45309] bg-warning-bg p-5">
+            <h2 className="text-[1.375rem] font-semibold text-ink">
+              Tem um preenchimento por concluir
+            </h2>
+            <p className="mt-1 text-[0.9375rem] text-[#92400E]">
+              Iniciado em {formatTimestamp(inProgress.started_at)}.
+            </p>
+            <Link
+              href={resumeHref(inProgress.id)}
+              className="mt-4 inline-flex min-h-13 items-center justify-center rounded-md bg-brand px-6 py-3.5 text-[1.0625rem] font-semibold text-brand-contrast shadow-sm transition hover:bg-brand-hover"
             >
-              Iniciar novo preenchimento
-            </button>
-          </form>
-        </section>
-      )}
-
-      {/* Histórico */}
-      <section>
-        <h2 className="mb-3 text-lg font-semibold text-slate-900">
-          Preenchimentos anteriores
-        </h2>
-        {sessions && sessions.length > 0 ? (
-          <ul className="space-y-2">
-            {sessions.map((s) => (
-              <li
-                key={s.id}
-                className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-4 py-3"
-              >
-                <div>
-                  <p className="font-medium text-slate-900">
-                    {formatTimestamp(s.started_at)}
-                  </p>
-                  <p className="text-sm text-slate-500">{s.timepoint}</p>
-                </div>
-                {s.status === "completed" ? (
-                  <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
-                    Concluído
-                  </span>
-                ) : (
-                  <Link
-                    href={resumeHref(s.id)}
-                    className="rounded-full bg-amber-100 px-3 py-1 text-sm font-medium text-amber-800 underline underline-offset-2"
-                  >
-                    Em curso — retomar
-                  </Link>
-                )}
-              </li>
-            ))}
-          </ul>
+              Retomar preenchimento
+            </Link>
+          </section>
         ) : (
-          <p className="text-sm text-slate-500">Ainda não há preenchimentos.</p>
+          <section className="mb-6 rounded-lg border border-line bg-surface p-5 shadow-card sm:p-6">
+            <h2 className="text-[1.375rem] font-semibold text-ink">
+              Novo preenchimento
+            </h2>
+            <p className="mt-1 text-[0.9375rem] text-muted">
+              Vai preencher dois formulários em sequência.
+            </p>
+            <form action={startSession} className="mt-4">
+              <button
+                type="submit"
+                className="inline-flex min-h-13 items-center justify-center rounded-md bg-brand px-6 py-3.5 text-[1.0625rem] font-semibold text-brand-contrast shadow-sm transition hover:bg-brand-hover active:translate-y-px"
+              >
+                Iniciar novo preenchimento
+              </button>
+            </form>
+          </section>
         )}
-      </section>
-    </main>
+
+        {/* Histórico */}
+        <section>
+          <h2 className="mb-3 text-[1.375rem] font-semibold text-ink">
+            Preenchimentos anteriores
+          </h2>
+          {sessions && sessions.length > 0 ? (
+            <ul className="space-y-2">
+              {sessions.map((s) => (
+                <li
+                  key={s.id}
+                  className="flex items-center justify-between gap-3 rounded-lg border border-line bg-surface px-4 py-3 shadow-sm"
+                >
+                  <div>
+                    <p className="font-medium text-ink">
+                      {formatTimestamp(s.started_at)}
+                    </p>
+                    <p className="text-[0.8125rem] text-muted">{s.timepoint}</p>
+                  </div>
+                  {s.status === "completed" ? (
+                    <span className="rounded-full bg-success-bg px-3 py-1 text-[0.8125rem] font-semibold text-success-strong">
+                      Concluído
+                    </span>
+                  ) : (
+                    <Link
+                      href={resumeHref(s.id)}
+                      className="rounded-full bg-warning-bg px-3 py-1 text-[0.8125rem] font-semibold text-[#92400E] underline underline-offset-2"
+                    >
+                      Em curso — retomar
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-[0.9375rem] text-muted">
+              Ainda não há preenchimentos.
+            </p>
+          )}
+        </section>
+      </main>
+      <Footer />
+    </div>
   );
 }

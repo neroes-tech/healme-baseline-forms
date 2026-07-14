@@ -16,6 +16,9 @@ function resolveEmail(input: string): string {
   return `polar${padded}@healme.pt`;
 }
 
+const inputClass =
+  "min-h-13 w-full rounded-sm border border-control bg-surface px-3.5 py-3 text-[1.0625rem] text-ink placeholder:text-placeholder focus-visible:border-brand";
+
 export default function LoginForm() {
   const router = useRouter();
   const [band, setBand] = useState("");
@@ -50,7 +53,7 @@ export default function LoginForm() {
       <div>
         <label
           htmlFor="band"
-          className="mb-1 block text-sm font-medium text-slate-700"
+          className="mb-1.5 block text-[0.8125rem] font-semibold text-muted"
         >
           Número da banda Polar
         </label>
@@ -63,14 +66,16 @@ export default function LoginForm() {
           value={band}
           onChange={(e) => setBand(e.target.value)}
           required
-          className="w-full rounded-lg border border-slate-300 bg-white px-3 py-3 text-lg text-slate-900"
+          aria-invalid={!!error}
+          aria-describedby={error ? "login-error" : undefined}
+          className={inputClass}
         />
       </div>
 
       <div>
         <label
           htmlFor="password"
-          className="mb-1 block text-sm font-medium text-slate-700"
+          className="mb-1.5 block text-[0.8125rem] font-semibold text-muted"
         >
           Palavra-passe
         </label>
@@ -81,20 +86,26 @@ export default function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="w-full rounded-lg border border-slate-300 bg-white px-3 py-3 text-lg text-slate-900"
+          aria-invalid={!!error}
+          aria-describedby={error ? "login-error" : undefined}
+          className={inputClass}
         />
       </div>
 
       {error && (
-        <p role="alert" className="text-sm font-medium text-red-600">
-          {error}
+        <p
+          id="login-error"
+          role="alert"
+          className="flex items-start gap-1.5 rounded-md border-l-4 border-error bg-error-bg p-3 text-[0.9375rem] font-medium text-error"
+        >
+          <span aria-hidden="true">⚠</span> {error}
         </p>
       )}
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-lg bg-slate-900 px-4 py-3 text-lg font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50"
+        className="inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-md bg-brand px-6 py-3.5 text-[1.0625rem] font-semibold text-brand-contrast shadow-sm transition hover:bg-brand-hover active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0"
       >
         {loading ? "A entrar…" : "Entrar"}
       </button>

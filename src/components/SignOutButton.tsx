@@ -23,7 +23,7 @@ export default function SignOutButton() {
       type="button"
       onClick={handleSignOut}
       disabled={loading}
-      className="text-sm font-medium text-slate-500 underline underline-offset-2 hover:text-slate-800 disabled:opacity-50"
+      className="inline-flex min-h-11 items-center gap-1.5 rounded-md px-3 py-2 text-[0.9375rem] font-semibold text-brand underline underline-offset-4 transition hover:bg-brand-tint hover:text-brand-hover disabled:opacity-50"
     >
       {loading ? "A sair…" : "Sair"}
     </button>

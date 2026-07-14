@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import Footer from "@/components/Footer";
 
 // /concluido — agradecimento + voltar ao dashboard. Sem pontuações.
 export default async function ConcluidoPage() {
@@ -11,22 +12,25 @@ export default async function ConcluidoPage() {
   if (!user) redirect("/login");
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-4 py-10 text-center">
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-2xl">
-          ✓
+    <div className="flex min-h-dvh flex-col">
+      <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-10 text-center">
+        <div className="rounded-xl border border-line bg-surface p-8 shadow-card">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-success-bg text-2xl text-success-strong">
+            ✓
+          </div>
+          <h1 className="text-[1.75rem] font-bold text-ink">Obrigado!</h1>
+          <p className="mt-2 text-[1.0625rem] text-muted">
+            As suas respostas foram guardadas com sucesso.
+          </p>
+          <Link
+            href="/"
+            className="mt-6 inline-flex min-h-13 items-center justify-center rounded-md bg-brand px-6 py-3.5 text-[1.0625rem] font-semibold text-brand-contrast shadow-sm transition hover:bg-brand-hover"
+          >
+            Voltar ao início
+          </Link>
         </div>
-        <h1 className="text-2xl font-bold text-slate-900">Obrigado!</h1>
-        <p className="mt-2 text-slate-600">
-          As suas respostas foram guardadas com sucesso.
-        </p>
-        <Link
-          href="/"
-          className="mt-6 inline-block rounded-lg bg-slate-900 px-5 py-3 text-base font-semibold text-white transition hover:bg-slate-800"
-        >
-          Voltar ao início
-        </Link>
-      </div>
-    </main>
+      </main>
+      <Footer />
+    </div>
   );
 }
